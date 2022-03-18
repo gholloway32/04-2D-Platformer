@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://Assets/portal_start.png" type="Texture" id=1]
 [ext_resource path="res://Player/Player_Container.gd" type="Script" id=2]
@@ -7,6 +7,8 @@
 [ext_resource path="res://Levels/Camera.tscn" type="PackedScene" id=5]
 [ext_resource path="res://Assets/Tiles.png" type="Texture" id=6]
 [ext_resource path="res://Levels/Spawn.gd" type="Script" id=7]
+[ext_resource path="res://Coin/Coin.tscn" type="PackedScene" id=8]
+[ext_resource path="res://UI/Menu.gd" type="Script" id=9]
 
 [sub_resource type="TileSet" id=1]
 0/name = "Tiles.png 0"
@@ -81,6 +83,11 @@ texture = ExtResource( 3 )
 position = Vector2( 3643.56, 493.357 )
 polygon = PoolVector2Array( 12, -48.7, 23, -35.7, 23, -32.4, 25, -27.9, 25, 27.1, 22.6, 37, 21, 37, 11.5, 50, -11.6, 50, -23, 35.7, -23, 32.4, -25, 27.9, -25, -26.1, -19.4, -42, -17.8, -42, -10, -49.8, 12, -50 )
 
+[node name="Node2D" type="Node2D" parent="."]
+
+[node name="Coin" parent="Node2D" instance=ExtResource( 8 )]
+position = Vector2( 1011, 301 )
+
 [node name="Player_Container" type="Node2D" parent="."]
 script = ExtResource( 2 )
 
@@ -107,4 +114,84 @@ format = 1
 [node name="Camera" parent="." instance=ExtResource( 5 )]
 process_mode = 0
 
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="HUD" type="Control" parent="UI"]
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Background" type="ColorRect" parent="UI/HUD"]
+margin_right = 1024.0
+margin_bottom = 30.0
+color = Color( 0, 0, 0, 0.501961 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Score" type="Label" parent="UI/HUD"]
+margin_left = 10.0
+margin_right = 512.0
+margin_bottom = 30.0
+text = "Score:"
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Health" type="Label" parent="UI/HUD"]
+margin_left = 512.0
+margin_right = 1014.0
+margin_bottom = 31.0
+text = "Health:"
+align = 2
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Menu" type="Control" parent="UI"]
+visible = false
+margin_right = 40.0
+margin_bottom = 40.0
+script = ExtResource( 9 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Background" type="ColorRect" parent="UI/Menu"]
+margin_right = 1024.0
+margin_bottom = 600.0
+color = Color( 0, 0, 0, 0.501961 )
+
+[node name="Save" type="Button" parent="UI/Menu"]
+margin_left = 412.0
+margin_top = 200.0
+margin_right = 612.0
+margin_bottom = 240.0
+text = "Save Game"
+
+[node name="Load" type="Button" parent="UI/Menu"]
+margin_left = 412.0
+margin_top = 250.0
+margin_right = 612.0
+margin_bottom = 290.0
+text = "Load Game"
+
+[node name="Quit" type="Button" parent="UI/Menu"]
+margin_left = 412.0
+margin_top = 400.0
+margin_right = 612.0
+margin_bottom = 440.0
+text = "Quit"
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+
 [connection signal="body_entered" from="Exit_to_2" to="Exit_to_2" method="_on_Exit_body_entered"]
+[connection signal="pressed" from="UI/Menu/Save" to="UI/Menu" method="_on_Save_pressed"]
+[connection signal="pressed" from="UI/Menu/Load" to="UI/Menu" method="_on_Load_pressed"]
+[connection signal="pressed" from="UI/Menu/Quit" to="UI/Menu" method="_on_Quit_pressed"]

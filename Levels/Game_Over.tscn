@@ -57,5 +57,9 @@ focus_neighbour_top = NodePath("../Play_Again")
 focus_previous = NodePath("../Play_Again")
 custom_fonts/font = SubResource( 2 )
 text = "Quit"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [connection signal="pressed" from="Play_Again" to="." method="_on_Play_Again_pressed"]
 [connection signal="pressed" from="Quit" to="." method="_on_Quit_pressed"]
