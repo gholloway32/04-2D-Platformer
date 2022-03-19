@@ -1,6 +1,6 @@
 extends Area2D
 
-var score = 10
+export var score = 100
 
 func _ready():
 	pass
@@ -8,5 +8,5 @@ func _ready():
 
 func _on_Coin_body_entered(body):
 	if body.name == "Player":
-		Global.update_score(score)
+		Global.increase_score(score)
 		queue_free()

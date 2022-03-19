@@ -1,23 +1,15 @@
 extends Control
 
-func _unhandled_input(event):
-	if event.is_action_pressed("menu"):
-		if visible:
-			hide()
-			get_tree().paused = false
-		else:
-			show()
-			get_tree().paused = true
-
-
+func _ready():
+	pass
 
 
 func _on_Save_pressed():
-	Global.save_game()
+	Global.save_game(0)
 
 
 func _on_Load_pressed():
-	Global.load_game()
+	Global.load_game(0)
 
 
 func _on_Quit_pressed():
