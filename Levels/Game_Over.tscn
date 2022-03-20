@@ -34,7 +34,8 @@ margin_right = 1024.0
 margin_bottom = 246.0
 custom_fonts/font = SubResource( 1 )
 text = "Congratulations! 
-You win!"
+You win!
+"
 align = 1
 valign = 1
 

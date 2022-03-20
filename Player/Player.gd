@@ -33,6 +33,7 @@ func _physics_process(_delta):
 	if direction > 0 and $AnimatedSprite.flip_h: $AnimatedSprite.flip_h = false
 	
 	if position.y > Global.death_zone:
+		Global.decrease_lives(1)
 		queue_free()
 		
 
@@ -55,5 +56,11 @@ func set_animation(anim):
 	if $AnimatedSprite.frames.has_animation(anim): $AnimatedSprite.play(anim)
 	else: $AnimatedSprite.play()
 
+func do_damage(d):
+	Global.decrease_health(d)
+	if Global.health <=0:
+		die()
+
 func die():
+	Global.decrease_lives(1)
 	queue_free()

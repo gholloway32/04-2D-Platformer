@@ -26,32 +26,63 @@ func get_save_data():
 		,"health":health 
 		,"level":level
 		,"player":""
+		,"enemy_grounded":[]
+		,"enemy_flying":[]
 		,"coins":[]
 	}
 	var player = get_node_or_null("/root/Game/Player_Container/Player")
 	if player != null:
 		data["player"] = var2str(player.position)
+	var enemies = get_node("/root/Game/Enemy_Container").get_children()
+	for e in enemies:
+		if e.is_in_group("Enemy_Grounded"):
+			var temp = {"position":var2str(e.position), "max_constraint":e.max_constraint, "min_constraint":e.min_constraint}
+			data["enemy_grounded"].append(temp)
+		if e.is_in_group("Enemy_Flying"):
+			var temp = {"position":var2str(e.position)}
+			data["enemy_flying"].append(temp)
 	var coins = get_node("/root/Game/Coin_Container").get_children()
 	for c in coins:
 		var temp = {"position":var2str(c.position), "score":c.score}
 		data["coins"].append(temp)
 	return data
 
+
+
+func load_save_level(data):
+	score = data["score"]
+	lives = data["lives"]
+	health = data["health"]
+	level = data["level"]
+	
+	get_tree().change_scene(levels[level])
+	call_deferred("load_save_data", data)
+	
 func load_save_data(data):
 	score = data["score"]
 	lives = data["lives"]
 	health = data["health"]
 	level = data["level"]
 	
-	#get_tree().change_scene(levels[level])
-	#call_deferred("load_save_data", data)
-	##
+	
+	var menu = get_node_or_null("/root/Game/UI/Menu")
+	if menu != null:
+		menu.show()
+	
 	if data["player"] != "":
 		var player = get_node_or_null("/root/Game/Player_container/Player")
 		if player != null:
 			player.queue_free()
 		get_node("/root/Game/Player_Container").spawn(str2var(data["player"]))
-	
+	var enemy_container = get_node("/root/Game/Enemy_Container")
+	for e in enemy_container.get_children():
+		e.queue_free()
+	for e in data["enemy_grounded"]:
+		var attr = {"max_constraint":e["max_constraint"], "min_constraint":e["min_constraint"]}
+		enemy_container.spawn("Enemy_Ground", attr, str2var(e["position"]))
+	for e in data["enemy_flying"]:
+		var attr = {}
+		enemy_container.spawn("Enemy_Flying", attr, str2var(e["position"]))
 	var coin_container = get_node("/root/Game/Coin_Container")
 	for c in coin_container.get_children():
 		c.queue_free()
@@ -96,7 +127,7 @@ func decrease_health(h):
 func decrease_lives(l):
 	lives -= l
 	health = max_health
-	if lives<= 0:
+	if lives <= 0:
 		get_tree().change_scene("res://Levels/Game_lost.tscn")
 
 func save_game(which_file):
@@ -113,7 +144,7 @@ func load_game(which_file):
 		var data = parse_json(file.get_as_text())
 		file.close()
 		if typeof(data) == TYPE_DICTIONARY:
-			pass
+			load_save_level(data)
 		else:
 			printerr("corrupted data")
 	else:

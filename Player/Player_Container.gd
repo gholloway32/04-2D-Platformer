@@ -4,8 +4,6 @@ onready var Player = load("res://Player/Player.tscn")
 export var spawn_location = Vector2(200,200)
 
 
-func _ready():
-	pass
 
 
 func _physics_process(_delta):
