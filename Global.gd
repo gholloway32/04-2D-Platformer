@@ -6,19 +6,14 @@ var lives = 5
 var max_lives = 5
 var health = 100
 var max_health = 100
-var level = 1
-var death_zone = 1000
-var levels = [
-	"res://Levels/Level1.tscn"
-	,"res://Levels/Level2.tscn"
-	,"res://Levels/Level3.tscn"
-	,"res://Levels/secretlevel.tscn"
-]
-
+var level = 0
+var death_zone = 2655
 var saves = [
 	"user://game-data_0.json"
 ]
-
+var levels = [
+	"res://Levels/Level1.tscn"
+]
 func get_save_data():
 	var data = {
 		"score":score
@@ -27,7 +22,6 @@ func get_save_data():
 		,"level":level
 		,"player":""
 		,"enemy_grounded":[]
-		,"enemy_flying":[]
 		,"coins":[]
 	}
 	var player = get_node_or_null("/root/Game/Player_Container/Player")
@@ -38,31 +32,27 @@ func get_save_data():
 		if e.is_in_group("Enemy_Grounded"):
 			var temp = {"position":var2str(e.position), "max_constraint":e.max_constraint, "min_constraint":e.min_constraint}
 			data["enemy_grounded"].append(temp)
-		if e.is_in_group("Enemy_Flying"):
-			var temp = {"position":var2str(e.position)}
-			data["enemy_flying"].append(temp)
 	var coins = get_node("/root/Game/Coin_Container").get_children()
 	for c in coins:
 		var temp = {"position":var2str(c.position), "score":c.score}
 		data["coins"].append(temp)
+	print(data)
 	return data
-
-
 
 func load_save_level(data):
 	score = data["score"]
 	lives = data["lives"]
 	health = data["health"]
 	level = data["level"]
-	
 	get_tree().change_scene(levels[level])
 	call_deferred("load_save_data", data)
-	
+
 func load_save_data(data):
 	score = data["score"]
 	lives = data["lives"]
 	health = data["health"]
 	level = data["level"]
+
 	
 	
 	var menu = get_node_or_null("/root/Game/UI/Menu")
@@ -72,6 +62,7 @@ func load_save_data(data):
 	if data["player"] != "":
 		var player = get_node_or_null("/root/Game/Player_container/Player")
 		if player != null:
+			player.name == "Player2"
 			player.queue_free()
 		get_node("/root/Game/Player_Container").spawn(str2var(data["player"]))
 	var enemy_container = get_node("/root/Game/Enemy_Container")
@@ -80,9 +71,6 @@ func load_save_data(data):
 	for e in data["enemy_grounded"]:
 		var attr = {"max_constraint":e["max_constraint"], "min_constraint":e["min_constraint"]}
 		enemy_container.spawn("Enemy_Ground", attr, str2var(e["position"]))
-	for e in data["enemy_flying"]:
-		var attr = {}
-		enemy_container.spawn("Enemy_Flying", attr, str2var(e["position"]))
 	var coin_container = get_node("/root/Game/Coin_Container")
 	for c in coin_container.get_children():
 		c.queue_free()
@@ -145,8 +133,6 @@ func load_game(which_file):
 		file.close()
 		if typeof(data) == TYPE_DICTIONARY:
 			load_save_level(data)
-		else:
-			printerr("corrupted data")
 	else:
 		printerr("no saved data")
 

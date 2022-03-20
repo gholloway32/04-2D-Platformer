@@ -1,23 +1,47 @@
 [gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://Enemy/Enemy_Flying.gd" type="Script" id=1]
 [ext_resource path="res://Assets/character_roundGreen.png" type="Texture" id=2]
+
+[sub_resource type="GDScript" id=7]
+script/source = "extends KinematicBody2D
+
+export var speed = 160
+export var damage = 50
+export var max_constraint = 1600 
+export var min_constraint = 1200
+var direction = 1
+var velocity = Vector2.ZERO
+
+func _physics_process(delta):
+	if direction < 0 and !$Sprite.flip_h: 
+		$Sprite.flip_h = true
+	if direction > 0 and $Sprite.flip_h:
+		$Sprite.flip_h = false 
+	
+	velocity.x = direction * speed 
+	move_and_slide(velocity, Vector2.UP)
+
+
+func _on_Area2D_body_entered(body):
+	if velocity.x != 0 and body.name == \"Platform\" or body.name == \"Ground\":
+		velocity.x = 0
+		direction *= -1
+	if body.name == \"Player\":
+		body.do_damage(damage)
+"
 
 [sub_resource type="CapsuleShape2D" id=6]
 radius = 27.0
 
-[node name="Enemy_Flying" type="KinematicBody2D" groups=["Enemy_Flying"]]
+[node name="Enemy_Flying" type="KinematicBody2D" groups=["Boss"]]
 position = Vector2( 964, 150 )
-script = ExtResource( 1 )
+script = SubResource( 7 )
 
 [node name="Sprite" type="Sprite" parent="."]
 texture = ExtResource( 2 )
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
 polygon = PoolVector2Array( 23, -22.9, 23, -15, 25.2, 12, 23.7, 12, 21.7, 23, 19.7, 23, 8.2, 32, -10.1, 32, -22, 21.9, -22, 17.3, -25, 10.4, -25, -14, -23.5, -14, -19.5, -27, -17.7, -27, -12, -31.9, 13, -32 )
-
-[node name="RayCast2D" type="RayCast2D" parent="."]
-enabled = true
 
 [node name="Area2D" type="Area2D" parent="."]
 

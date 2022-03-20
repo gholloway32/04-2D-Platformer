@@ -2,7 +2,6 @@ extends KinematicBody2D
 
 onready var SM = $StateMachine
 onready var VP = get_viewport_rect()
-
 var velocity = Vector2.ZERO
 var jump_power = Vector2.ZERO
 var direction = 1
@@ -60,7 +59,8 @@ func do_damage(d):
 	Global.decrease_health(d)
 	if Global.health <=0:
 		die()
+		Global.decrease_lives(1)
+		Global.health = Global.max_health
 
 func die():
-	Global.decrease_lives(1)
 	queue_free()
